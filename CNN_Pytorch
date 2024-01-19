@@ -91,7 +91,7 @@ model = SimpleCNN()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-nb_epoch = 2
+nb_epoch = 10
 for epoch in range(nb_epoch):
     with tqdm(train_loader, desc=f'Epoch {epoch +1}/{nb_epoch}', unit='batch') as train_loader :
         for images, labels in train_loader:
