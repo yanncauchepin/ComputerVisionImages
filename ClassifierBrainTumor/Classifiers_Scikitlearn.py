@@ -13,7 +13,7 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 
-dataset_dir = f"{os.getcwd()}/Dataset"
+dataset_dir = f"/media/yanncauchepin/ExternalDisk/Datasets/ComputerVisionPictures/ClassifierBrainTumor"
 
 class_labels = ['no', 'yes']
 

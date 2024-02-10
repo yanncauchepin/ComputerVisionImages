@@ -3,13 +3,12 @@
 @author: yanncauchepin
 """
 
-
 import os
 import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 
-dataset_dir = f"{os.getcwd()}/Dataset"
+dataset_dir = f"/media/yanncauchepin/ExternalDisk/Datasets/ComputerVisionPictures/ClassifierBrainTumor"
 
 class_labels = ['no', 'yes']
 

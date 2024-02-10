@@ -48,7 +48,7 @@ class CustomDataset(Dataset):
         return image, label
 
 
-dataset_dir = f"{os.getcwd()}/Dataset"
+dataset_dir = f"/media/yanncauchepin/ExternalDisk/Datasets/ComputerVisionPictures/ClassifierBrainTumor"
 class_labels = ['no', 'yes']
 
 transform = transforms.Compose([
