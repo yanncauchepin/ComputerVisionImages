@@ -2,6 +2,12 @@ import os
 import cv2
 import numpy as np
 
+# numpy.array can be replaced by cv2.UMat
+# UMat2nparray : umat.get() = nparray
+
+def byte_array(*, image):
+    return bytearray(image)
+
 def read_image(*, path, color_format='color'):
     map_ = {
         'color' : cv2.IMREAD_COLOR,
@@ -48,18 +54,39 @@ def edit_color_image(*, image, color_format):
 def random_picture(*, root_path, width, height, type_image='bgr'):
     if type_image=='bgr':
         image_array = np.random.randint(0, 256, width*height*3)
-        # alternative = os.urandom(width*height*3)
+        # alternative = np.array(os.urandom(width*height*3))
         image = image_array.reshape(width, height, 3)
         cv2.imwrite(os.path.join(root_path, 'random_bgr_image.png'), image)
     elif type_image=='gray':
         image_array = np.random.randint(0, 256, width*height)
-        # alternative = os.urandom(width*height)
+        # alternative = np.array(os.urandom(width*height))
         image = image_array.reshape(width, height)
         cv2.imwrite(os.path.join(root_path, 'random_gray_image.png'), image)
     else:
         raise Exception(f'Type image {type_image} not recognized.')
+
+def edit_byte_image(*, image, width, height, byte):
+    image.itemset((width, height), byte)
+    # alternative = image[width, height] = byte
+    return image
+
+def edit_color_image(*, image, color):
+    # here full roi (region of interest)
+    if color=='blue':
+        image[:, :, 0] = 255
+    elif color=='green': 
+        image[:, :, 1] = 255
+    elif color=='red':
+        image[:, :, 2] = 255
+    return image
     
-    
+def get_format(*, image):
+    return {
+        'shape': image.shape,
+        'size': image.size,
+        'dtype': image.dtype
+        }
+
 if __name__ == '__main__':
     random_picture(
         root_path = '/home/yanncauchepin/Git/PublicProjects/ComputerVisionImages/temp',
