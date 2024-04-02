@@ -2,6 +2,8 @@ import os
 import cv2
 import numpy as np
 
+"""IMAGE MANIPULATION"""
+
 # numpy.array can be replaced by cv2.UMat
 # UMat2nparray : umat.get() = nparray
 
