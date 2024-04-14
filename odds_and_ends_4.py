@@ -75,7 +75,11 @@ divides the multidimensional HOG descriptor space into people (on one side of th
 hyperplane) and non-people (on the other side). Thereafter, when we give the trained 
 SVM a vector of HOG descriptors for any other window in any image, the SVM can 
 judge whether the window contains a person or not. The SVM can even give us a 
-confidence value that relates to the vector's distance from the optimal hyperplane.''
+confidence value that relates to the vector's distance from the optimal hyperplane.'''
+
+
+
+
 
 if __name__=='__main__':
     pass
