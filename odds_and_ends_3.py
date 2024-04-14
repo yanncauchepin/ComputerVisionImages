@@ -372,6 +372,150 @@ line rolling on a circle cuts two fixed tangents of the circle in two sets of
 points that are homographic.". A bit clearer: homography is a condition in which 
 two figures find each other when one is a perspective distortion of the other.'''
 
+def flann_homography_matching(image_1, image_2):
+    MIN_NUM_GOOD_MATCHES = 10
+    
+    # Perform SIFT feature detection and description.
+    sift = cv2.SIFT_create()
+    image_1_kp, image_1_descriptor = sift.detectAndCompute(image_1, None)
+    image_2_kp, image_2_descriptor = sift.detectAndCompute(image_2, None)
+    
+    # Define FLANN-based matching parameters.
+    FLANN_INDEX_KDTREE = 1
+    index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
+    search_params = dict(checks=50)
+    
+    # Perform FLANN-based matching.
+    flann = cv2.FlannBasedMatcher(index_params, search_params)
+    matches = flann.knnMatch(image_1_descriptor, image_2_descriptor, k=2)
+    
+    # Find all the good matches as per Lowe's ratio test.
+    good_matches = []
+    for m, n in matches:
+        if m.distance < 0.7 * n.distance:
+            good_matches.append(m)
+    
+    if len(good_matches) >= MIN_NUM_GOOD_MATCHES:
+        src_pts = np.float32(
+            [image_1_kp[m.queryIdx].pt for m in good_matches]).reshape(-1, 1, 2)
+        dst_pts = np.float32(
+            [image_2_kp[m.trainIdx].pt for m in good_matches]).reshape(-1, 1, 2)
+    
+        M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
+        mask_matches = mask.ravel().tolist()
+    
+        h, w = image_1.shape
+        src_corners = np.float32(
+            [[0, 0], [0, h-1], [w-1, h-1], [w-1, 0]]).reshape(-1, 1, 2)
+        dst_corners = cv2.perspectiveTransform(src_corners, M)
+        dst_corners = dst_corners.astype(np.int32)
+    
+        # Draw the bounds of the matched region based on the homography.
+        num_corners = len(dst_corners)
+        for i in range(num_corners):
+            x0, y0 = dst_corners[i][0]
+            if i == num_corners - 1:
+                next_i = 0
+            else:
+                next_i = i + 1
+            x1, y1 = dst_corners[next_i][0]
+            cv2.line(image_2, (x0, y0), (x1, y1), 255, 3, cv2.LINE_AA)
+    
+        # Draw the matches that passed the ratio test.
+        image_matches = cv2.drawMatches(
+            image_1, image_1_kp, image_2, image_2_kp, good_matches, None,
+            matchColor=(0, 255, 0), singlePointColor=None,
+            matchesMask=mask_matches, flags=2)
+    
+        # Show the homography and good matches.
+        plt.imshow(image_matches)
+        plt.show()
+    else:
+        print("Not enough matches good were found - %d/%d" % \
+              (len(good_matches), MIN_NUM_GOOD_MATCHES))
+
+def create_descriptors(folder):
+    feature_detector = cv2.SIFT_create()
+    files = []
+    for (dirpath, dirnames, filenames) in os.walk(folder):
+        files.extend(filenames)
+    for f in files:
+        create_descriptor(folder, f, feature_detector)
+        
+def create_descriptor(folder, image_path, feature_detector):
+    if not image_path.endswith('png'):
+        print('skipping %s' % image_path)
+        return
+    print('reading %s' % image_path)
+    img = cv2.imread(os.path.join(folder, image_path),
+                     cv2.IMREAD_GRAYSCALE)
+    keypoints, descriptors = feature_detector.detectAndCompute(
+        img, None)
+    descriptor_file = image_path.replace('png', 'npy')
+    np.save(os.path.join(folder, descriptor_file), descriptors)
+
+
+def scan_for_matches(folder, query):
+    # create files, images, descriptors globals
+    files = []
+    images = []
+    descriptors = []
+    for (dirpath, dirnames, filenames) in os.walk(folder):
+        files.extend(filenames)
+        for f in files:
+            if f.endswith('npy') and f != 'query.npy':
+                descriptors.append(f)
+    print(descriptors)
+    
+    # Create the SIFT detector.
+    sift = cv2.SIFT_create()
+    
+    # Perform SIFT feature detection and description on the
+    # query image.
+    query_kp, query_ds = sift.detectAndCompute(query, None)
+    
+    # Define FLANN-based matching parameters.
+    FLANN_INDEX_KDTREE = 1
+    index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
+    search_params = dict(checks=50)
+    
+    # Create the FLANN matcher.
+    flann = cv2.FlannBasedMatcher(index_params, search_params)
+    
+    # Define the minimum number of good matches for a suspect.
+    MIN_NUM_GOOD_MATCHES = 10
+    
+    greatest_num_good_matches = 0
+    prime_suspect = None
+    
+    print('>> Initiating picture scan...')
+    '''Note the use of the np.load method, which loads a specified npy file into 
+    a NumPy array.'''
+    for d in descriptors:
+        print('--------- analyzing %s for matches ------------' % d)
+        matches = flann.knnMatch(
+            query_ds, np.load(os.path.join(folder, d)), k=2)
+        good_matches = []
+        for m, n in matches:
+            if m.distance < 0.7 * n.distance:
+                good_matches.append(m)
+        num_good_matches = len(good_matches)
+        name = d.replace('.npy', '').upper()
+        if num_good_matches >= MIN_NUM_GOOD_MATCHES:
+            print('%s is a suspect! (%d matches)' % \
+                (name, num_good_matches))
+            if num_good_matches > greatest_num_good_matches:
+                greatest_num_good_matches = num_good_matches
+                prime_suspect = name
+        else:
+            print('%s is NOT a suspect. (%d matches)' % \
+                (name, num_good_matches))
+    
+    if prime_suspect is not None:
+        print('Prime suspect is %s.' % prime_suspect)
+    else:
+        print('There is no suspect.')
+
 if __name__ == '__main__':
     
     # image_path = '/home/yanncauchepin/Git/PublicProjects/ComputerVisionImages/chessboard.png'
@@ -389,10 +533,11 @@ if __name__ == '__main__':
     # image_path = '/home/yanncauchepin/Git/PublicProjects/ComputerVisionImages/kennedy_space_center.jpg'
     # image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     # image_knn_ratio_test_matching(feature_image, image)
+
+    folder = 'tattoos/'
+    create_descriptors(folder)
     
-    feature_image_path = '/home/yanncauchepin/Git/PublicProjects/ComputerVisionImages/gauguin_entre_les_lys.jpg'
-    feature_image = cv2.imread(feature_image_path, cv2.IMREAD_GRAYSCALE)
-    image_path = '/home/yanncauchepin/Git/PublicProjects/ComputerVisionImages/gauguin_paintings.png'
-    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    flann_matching(feature_image, image)
+    query = cv2.imread(os.path.join(folder, 'query.png'),
+                   cv2.IMREAD_GRAYSCALE)
+    scan_for_matches(folder, query)
     
