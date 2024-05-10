@@ -77,9 +77,126 @@ SVM a vector of HOG descriptors for any other window in any image, the SVM can
 judge whether the window contains a person or not. The SVM can even give us a 
 confidence value that relates to the vector's distance from the optimal hyperplane.'''
 
+'''OpenCV comes with a class called cv2.HOGDescriptor, which is capable of performing 
+people detection. The interface has some similarities to the cv2.CascadeClassifier 
+class that we used in Chapter 5, Detecting and Recognizing Faces. However, unlike 
+cv2.CascadeClassifier, cv2.HOGDescriptor sometimes returns nested detection rectangles. 
+In other words, cv2.HOGDescriptor might tell us that it detected one person whose 
+bounding rectangle is located completely inside another person's bounding rectangle. 
+However, in a typical situation, nested detections are probably errors, so 
+cv2.HOGDescriptor is often used along with code to filter out any nested detections. 
+Let's begin our sample script by implementing a test to determine whether one 
+rectangle is nested inside another.
+'''  
+def is_inside(i, o):
+    '''
+    For this purpose, we will write a function, is_inside(i, o), where i is the 
+    possible inner rectangle and o is the possible outer rectangle.
+    '''
+    ix, iy, iw, ih = i
+    ox, oy, ow, oh = o
+    return ix > ox and ix + iw < ox + ow and \
+        iy > oy and iy + ih < oy + oh
 
+def people_detector(image, filter=True):
+    '''
+    Note that cv2.HOGDescriptor has a detectMultiScale method, which returns two 
+    lists:
+    - A list of bounding rectangles for detected objects (in this case, detected 
+    people).
+    - A list of weights or confidence scores for detected objects. A higher value 
+    indicates greater confidence that the detection result is correct.
+    
+    detectMultiScale accepts several optional arguments, including the following:
+    - winStride: This tuple defines the x and y distance that the sliding window 
+    moves between successive detection attempts. HOG works well with overlapping 
+    windows, so the stride may be small relative to the window size. A smaller 
+    value produces more detections, at a higher computational cost. The default 
+    stride has no overlap; it is the same as the window size, which is (64, 128) 
+    for the default people detector.
+    - scale: This scale factor is applied between successive levels of the image 
+    pyramid. A smaller value produces more detections, at a higher computational 
+    cost. The value must be greater than 1.0. The default is 1.5.
+    - groupThreshold: This value determines how stringent our detection criteria 
+    are. A smaller value is less stringent, resulting in more detections. The 
+    default is 2.0.
 
+    '''
+    hog = cv2.HOGDescriptor()
+    hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+    '''Note that we specified the people detector with the setSVMDetector method.'''
+    found_rects, found_weights = hog.detectMultiScale(
+        image, winStride=(4, 4), scale=1.02, groupThreshold=1.9)
+    found_rects_filtered = []
+    found_weights_filtered = []
+    for ri, r in enumerate(found_rects):
+        for qi, q in enumerate(found_rects):
+            if ri != qi and is_inside(r, q):
+                break
+        else:
+            found_rects_filtered.append(r)
+            found_weights_filtered.append(found_weights[ri])
+    for ri, r in enumerate(found_rects_filtered):
+        x, y, w, h = r
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 255), 2)
+        text = '%.2f' % found_weights_filtered[ri]
+        cv2.putText(image, text, (x, y - 20),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+    return {
+        "found_rects": found_rects,
+        "founds_weight": found_weights,
+        "found_rects_filtered": found_rects_filtered,
+        "founds_weight_filtered": found_weights_filtered,
+        "image": image
+        }
+
+'''Sometimes, in the context of computer vision, BoW is called bag of visual words 
+(BoVW). BoW is the technique by which we assign a weight or count to each word in 
+a series of documents; we then represent these documents with vectors of these counts. 
+For example, a document can be classified as spam or not spam based on such a 
+representation. Indeed, spam filtering is one of the many real-world applications 
+of BoW.
+
+We are by now familiar with the concepts of features and descriptors. We have used 
+algorithms such as SIFT and SURF to extract descriptors from an image's features 
+so that we can match these features in another image.
+We have also recently familiarized ourselves with another kind of descriptor, based 
+on a codebook or dictionary. We know about an SVM, a model that can accept labeled 
+descriptor vectors as training data, can find an optimal division of the descriptor 
+space into the given classes, and can predict the classes of new data.
+Armed with this knowledge, we can take the following approach to build a classifier:
+1. Take a sample dataset of images.
+2. For each image in the dataset, extract descriptors (with SIFT, SURF, ORB, or 
+a similar algorithm).
+3. Add each descriptor vector to the BoW trainer.
+4. Cluster the descriptors into k clusters whose centers (centroids) are our visual 
+words. This last point probably sounds a bit obscure, but we will explore it further 
+in the next section.
+At the end of this process, we have a dictionary of visual words ready to be used. 
+As you can imagine, a large dataset will help make our dictionary richer in visual 
+words. Up to a point, the more words, the better!
+
+Given a test image, we can extract descriptors and quantize them (or reduce their 
+dimensionality) by calculating a histogram of their distances to the centroids. 
+Based on this, we can attempt to recognize visual words, and locate them in the image.
+
+k-means clustering is a method of quantization whereby we analyze a large number 
+of vectors in order to find a small number of clusters. Given a dataset, k represents 
+the number of clusters into which the dataset is going to be divided. The term means 
+refers to the mathematical concept of the mean or the average; when visually 
+represented, the mean of a cluster is its centroid or the geometric center of points 
+in the cluster. OpenCV provides a class called cv2.BOWKMeansTrainer, which we will 
+use to help train our classifier.
+'''
+
+'''We are going to train a car detector, so our dataset must contain positive samples that represent cars, as well as negative samples that represent other (non-car) things that the detector is likely to encounter while looking for cars. For example, if the detector is intended to search for cars on a street, then a picture of a curb, a crosswalk, a pedestrian, or a bicycle might be a more representative negative sample than a picture of the rings of Saturn. Besides representing the expected subject matter, ideally, the training samples should represent the way our particular camera and algorithm will see the subject matter. We intend to use a sliding window of fixed size, so it is important that our training samples conform to a fixed size, and that the positive samples are tightly cropped in order to frame a car without much background.
+'''
 
 
 if __name__=='__main__':
-    pass
+    
+    image_path = '/home/yanncauchepin/Git/PublicProjects/ComputerVisionImages/haying.jpg'
+    image = cv2.imread(image_path)
+    people_detector = people_detector(image)
+    cv2.imshow('People detector', people_detector['image'])
+    cv2.waitKey(0)
