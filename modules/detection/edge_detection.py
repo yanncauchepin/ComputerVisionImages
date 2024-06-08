@@ -99,7 +99,7 @@ class EdgeDetection():
     5. Analyze all the edges and their connection to each other to keep the real edges 
     and discard the weak ones.'''
     @staticmethod
-    def canny_kernel(*, width_kernel, height_kernel, image):
+    def canny_kernel(width_kernel, height_kernel, image):
         canny_kernel_image = cv2.Canny(image, width_kernel, height_kernel)
         cv2.imshow('Canny kernel', canny_kernel_image)
     '''After finding Canny edges, we can do further analysis of the edges in order to 

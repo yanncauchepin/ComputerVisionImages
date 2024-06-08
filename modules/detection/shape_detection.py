@@ -96,33 +96,3 @@ class ShapeDetection():
     when we talked about approxPolyDP. This function allows for the approximation of 
     polygons, so if your image contains polygons, they will be accurately detected 
     through the combined use of cv2.findContours and cv2.approxPolyDP.'''
-
-
-
-
-
-
-
-if __name__=='__main__':
-    pass
-
-    # path_to_image = 'Thoune3.jpg'
-    # image = cv2.imread(path_to_image)
-    # gray_image = cv2.imread(path_to_image, cv2.IMREAD_GRAYSCALE)
-    # kernel_3 = np.array([[-1, -1, -1],
-    #                      [-1, 8, -1],
-    #                      [-1, -1, -1]])
-    # kernel_5 = np.array([[-1, -1, -1, -1, -1],
-    #                      [-1, 1, 2, 1, -1],
-    #                      [-1, 2, 4, 2, -1],
-    #                      [-1, 1, 2, 1, -1],
-    #                      [-1, -1, -1, -1, -1]])
-    # custom_kernel_HPF(kernel=kernel_3, image=gray_image)
-    # gaussian_blur_low_pass_kernel(size_kernel=17, image=gray_image, difference=True)
-    # canny_kernel(width_kernel=200, height_kernel=300, image=gray_image)
-    # contours_example()
-    # contours(image=gray_image)
-    # bounding_shape(image=bgr_image)
-    # convex_contours(path_to_image=path_to_image)
-    # houghlines_detection(image=image)
-    # houghcircles_detection(image=image)

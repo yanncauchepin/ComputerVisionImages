@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-class KeypointsMatching():
+class KeypointMatching():
     
     
     def __init__(self):
@@ -225,7 +225,7 @@ class KeypointsMatching():
             M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
             mask_matches = mask.ravel().tolist()
         
-            h, w = image_1.shape
+            h, w = image_1.shape[:2]
             src_corners = np.float32(
                 [[0, 0], [0, h-1], [w-1, h-1], [w-1, 0]]).reshape(-1, 1, 2)
             dst_corners = cv2.perspectiveTransform(src_corners, M)
@@ -266,7 +266,7 @@ class KeypointsMatching():
         for (dirpath, dirnames, filenames) in os.walk(folder):
             files.extend(filenames)
         for f in files:
-            KeypointsMatching.create_descriptor(folder, f, feature_detector)
+            KeypointMatching.create_descriptor(folder, f, feature_detector)
     
     
     @staticmethod
@@ -344,36 +344,4 @@ class KeypointsMatching():
             print('Prime suspect is %s.' % prime_suspect)
         else:
             print('There is no suspect.')
-            
-            
-            
-            
-            
-            
-
-if __name__ == '__main__':
-    pass
-    
-    # image_path = '/home/yanncauchepin/Git/PublicProjects/ComputerVisionImages/chessboard.png'
-    # image = cv2.imread(image_path)
-    # image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # detecting_harris_corner(image_gray)
-    
-    # image_path = '/home/yanncauchepin/Git/PublicProjects/ComputerVisionImages/Thoune3.jpg'
-    # image = cv2.imread(image_path)
-    # image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # detecting_surf_keypoints_descriptors(image_gray)
-    
-    # feature_image_path = '/home/yanncauchepin/Git/PublicProjects/ComputerVisionImages/nasa_logo.png'
-    # feature_image = cv2.imread(feature_image_path, cv2.IMREAD_GRAYSCALE)
-    # image_path = '/home/yanncauchepin/Git/PublicProjects/ComputerVisionImages/kennedy_space_center.jpg'
-    # image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    # image_knn_ratio_test_matching(feature_image, image)
-
-    # folder = 'tattoos/'
-    # create_descriptors(folder)
-    
-    # query = cv2.imread(os.path.join(folder, 'query.png'),
-    #                cv2.IMREAD_GRAYSCALE)
-    # scan_for_matches(folder, query)
     

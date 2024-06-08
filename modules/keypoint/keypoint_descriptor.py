@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-class KeypointsDescriptors():
+class KeypointDescriptor():
     
     
     '''Anatomy of a keypoint
@@ -47,7 +47,7 @@ class KeypointsDescriptors():
     is the same here. The final result of a DoG operation contains areas of interest 
     (keypoints), which are then going to be described through SIFT.'''
     @staticmethod
-    def detecting_sift_keypoints_descriptors(image, show=True):
+    def detecting_sift_keypoint_descriptor(image, show=True):
         sift = cv2.SIFT_create()
         keypoints, descriptors = sift.detectAndCompute(image, None)
         image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
@@ -77,7 +77,7 @@ class KeypointsDescriptors():
     keypoint detection with DoG and descriptor extraction with SIFT.
     '''
     @staticmethod
-    def detecting_surf_keypoints_descriptors(image, show=True):
+    def detecting_surf_keypoint_descriptor(image, show=True):
         surf = cv2.xfeatures2d.SURF_create(8000)
         '''The parameter to cv2.xfeatures2d.SURF_create is a threshold for the Fast 
         Hessian algorithm. By increasing the threshold, we can reduce the number of 
