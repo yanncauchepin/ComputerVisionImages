@@ -424,7 +424,7 @@ def main_mnist_classifier():
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
     cv2.imshow("thresh", thresh) 
     cv2.imshow("detected and classified digits", img) 
-    cv2.waitKey() 
+    cv2.waitKey(0) 
 
 def optical_character_recognition_OCR():
     pass

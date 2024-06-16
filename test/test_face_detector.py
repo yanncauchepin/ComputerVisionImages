@@ -9,6 +9,9 @@ Created on Sat Jun  8 19:02:55 2024
 import cv2
 import pytest
 import numpy as np
+
+import sys
+sys.path.append('.')
 import modules
 
 
@@ -16,7 +19,7 @@ import modules
 #   IMAGES
 # =============================================================================
 
-path_to_image_army = 'images/army.jpg'
+path_to_image_army = 'test/images/army.jpg'
 image_army = cv2.imread(path_to_image_army)
 image_army_gray = cv2.imread(path_to_image_army, cv2.IMREAD_GRAYSCALE)
 

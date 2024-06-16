@@ -46,6 +46,7 @@ class EdgeDetection():
         '''
         if show:
             cv2.imshow('Custom kernel image', kernel_image)
+            cv2.waitKey(0)
         return kernel_image
 
 
@@ -63,6 +64,7 @@ class EdgeDetection():
             cv2.imshow('Gaussian blur low-pass kernel image', blur_kernel_image)
             if difference:
                 cv2.imshow('Differential high-pass kernel image', difference_image)
+            cv2.waitKey(0)
         if difference:
             return blur_kernel_image, difference_image
         else:

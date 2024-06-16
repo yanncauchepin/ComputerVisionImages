@@ -272,6 +272,7 @@ def detector_car():
     cv2.FONT_HERSHEY_SIMPLEX, 1,
                     color, 2, cv2.LINE_AA)
     cv2.imshow(test_img_path, img)
+    cv2.waitKey(0)
         
     '''
     Incorrect classification solely depends upon the amount and nature of positive 
@@ -465,6 +466,7 @@ def detector_car_sliding_window()    :
             cv2.putText(img, text, (int(x0), int(y0) - 20),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
         cv2.imshow(test_img_path, img)
+        cv2.waitKey(0)
         
     '''Remember that in this sample script, our training sets are small. Larger 
     training sets, with more diverse backgrounds, could improve the results. Also, 

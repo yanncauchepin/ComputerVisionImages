@@ -18,6 +18,7 @@ class ContourDetection():
         image = cv2.drawContours(color, contours, -1, (0,255,0), 2)
         if show:
             cv2.imshow("Contours image", image)
+            cv2.waitKey(0)
         return image
 
 
@@ -45,6 +46,7 @@ class ContourDetection():
         cv2.drawContours(image, contours, -1, (255, 0, 0), 1)
         if show:
             cv2.imshow("Bounding shape image", image)
+            cv2.waitKey(0)
         return image
     
 
@@ -86,4 +88,5 @@ class ContourDetection():
             cv2.drawContours(black, [hull], -1, (0, 0, 255), 2)
         if show:
             cv2.imshow("Hull detection image", black)
+            cv2.waitKey(0)
         return black

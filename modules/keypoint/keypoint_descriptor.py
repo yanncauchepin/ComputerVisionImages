@@ -55,6 +55,7 @@ class KeypointDescriptor():
                       cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
         if show:
             cv2.imshow('sift_keypoints', image)
+            cv2.waitKey(0)
         return image
         '''Behind the scenes, these simple lines of code carry out an elaborate process; 
         we create a cv2.SIFT object, which uses DoG to detect keypoints and then computes 
@@ -88,6 +89,7 @@ class KeypointDescriptor():
                       cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
         if show:
             cv2.imshow('surf_keypoints', image)
+            cv2.waitKey(0)
         return image
 
 

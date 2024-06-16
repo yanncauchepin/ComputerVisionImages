@@ -57,6 +57,7 @@ class ShapeDetection():
         if show:
             cv2.imshow("Edges image", edges)
             cv2.imshow("Lines image", image)
+            cv2.waitKey(0)
         return image
 
 
@@ -82,6 +83,7 @@ class ShapeDetection():
                        (0, 0, 255), 3)
         if show:
             cv2.imshow("Cirlces image", image)
+            cv2.waitKey(0)
         return image
     '''Note that we do not call the Canny function here because, when we call HoughCircles 
     with the cv2.HOUGH_GRADIENT option, the latter function already applies the Canny 

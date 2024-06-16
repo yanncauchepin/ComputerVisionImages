@@ -87,4 +87,5 @@ class FaceDetector():
             image = cv2.rectangle(image, (x, y), (x+w, y+h), (255, 255, 0), 2)
         if show:
             cv2.imshow('Faces detected image', image)
+            cv2.waitKey(0)
         return image

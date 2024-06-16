@@ -52,5 +52,6 @@ class FeatureDetection():
         score, and we color these pixels red in the original image.'''
         if show:
             cv2.imshow('corners', image)
+            cv2.waitKey(0)
         return image
 

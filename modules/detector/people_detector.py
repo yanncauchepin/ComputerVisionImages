@@ -152,6 +152,7 @@ class PeopleDetector():
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
         if show:
             cv2.imshow('People detector', image)
+            cv2.waitKey(0)
         return {
             "found_rects": found_rects,
             "founds_weight": found_weights,
