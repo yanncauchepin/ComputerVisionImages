@@ -115,8 +115,8 @@ class TestContourDetection():
 # =============================================================================
 
 if __name__=='__main__':
-    # pass
-    pytest.main()
+    pass
+    # pytest.main()
 
     # TestContourDetection.test_contours_thoune()
     # TestContourDetection.test_bounding_shape_champex()
