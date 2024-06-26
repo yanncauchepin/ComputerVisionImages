@@ -1,7 +1,6 @@
 import numpy as np
 
-import samples
-import samples.classifier_brain_tumor.preprocessing as BrainTumorPreprocessing
+import ComputerVisionImages.samples.classifier_brain_tumor.preprocessing as BrainTumorPreprocessing
 
 import cv2
 

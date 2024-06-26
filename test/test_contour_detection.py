@@ -10,16 +10,11 @@ import cv2
 import pytest
 import numpy as np
 
-import sys
-sys.path.append('.')
-import modules
-
-
 # =============================================================================
 #   IMAGES
 # =============================================================================
 
-path_to_image_thoune= 'test/images/thoune.jpg'
+path_to_image_thoune = 'test/images/thoune.jpg'
 image_thoune = cv2.imread(path_to_image_thoune)
 image_thoune_gray = cv2.imread(path_to_image_thoune, cv2.IMREAD_GRAYSCALE)
 
@@ -79,7 +74,7 @@ image_anchor_query_gray = cv2.imread(path_to_image_anchor_query, cv2.IMREAD_GRAY
 #   CONTOUR DETECTION
 # =============================================================================
 
-from modules.detection.contour_detection import ContourDetection
+from ComputerVisionImages.modules.detection.contour_detection import ContourDetection
 class TestContourDetection():
 
     @staticmethod
@@ -115,8 +110,8 @@ class TestContourDetection():
 # =============================================================================
 
 if __name__=='__main__':
-    pass
-    # pytest.main()
+    # pass
+    pytest.main()
 
     # TestContourDetection.test_contours_thoune()
     # TestContourDetection.test_bounding_shape_champex()

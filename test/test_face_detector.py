@@ -10,11 +10,6 @@ import cv2
 import pytest
 import numpy as np
 
-import sys
-sys.path.append('.')
-import modules
-
-
 # =============================================================================
 #   IMAGES
 # =============================================================================
@@ -27,7 +22,7 @@ image_army_gray = cv2.imread(path_to_image_army, cv2.IMREAD_GRAYSCALE)
 #   FACE DETECTOR
 # =============================================================================
 
-from modules.detector.face_detector import FaceDetector
+from ComputerVisionImages.modules.detector.face_detector import FaceDetector
 class TestFaceDetector():
     
     @staticmethod 

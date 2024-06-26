@@ -9,7 +9,6 @@ Created on Sat Jun  8 14:19:13 2024
 import cv2
 import pytest
 import numpy as np
-import modules
 
 
 # =============================================================================
@@ -77,7 +76,7 @@ image_anchor_query_gray = cv2.imread(path_to_image_anchor_query, cv2.IMREAD_GRAY
 #   SHAPE DETECTION
 # =============================================================================
 
-from modules.detection.shape_detection import ShapeDetection
+from ComputerVisionImages.modules.detection.shape_detection import ShapeDetection
 class TestShapeDetection():
     
     @staticmethod 

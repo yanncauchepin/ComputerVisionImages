@@ -10,11 +10,6 @@ import cv2
 import pytest
 import numpy as np
 
-import sys
-sys.path.append('.')
-import modules
-
-
 # =============================================================================
 #   IMAGES
 # =============================================================================
@@ -80,7 +75,7 @@ image_anchor_query_gray = cv2.imread(path_to_image_anchor_query, cv2.IMREAD_GRAY
 #   KEYPOINT MATCHING
 # =============================================================================
 
-from modules.keypoint.keypoint_matching import KeypointMatching
+from ComputerVisionImages.modules.keypoint.keypoint_matching import KeypointMatching
 class TestKeypointMatching():
     
     @staticmethod 

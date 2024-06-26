@@ -10,11 +10,6 @@ import cv2
 import pytest
 import numpy as np
 
-import sys
-sys.path.append('.')
-import modules
-
-
 # =============================================================================
 #   IMAGES
 # =============================================================================
@@ -31,7 +26,7 @@ image_haying_gray = cv2.imread(path_to_image_haying, cv2.IMREAD_GRAYSCALE)
 #   PEOPLE DETECTOR
 # =============================================================================
 
-from modules.detector.people_detector import PeopleDetector
+from ComputerVisionImages.modules.detector.people_detector import PeopleDetector
 class TestPeopleDetector():
     
     @staticmethod 
