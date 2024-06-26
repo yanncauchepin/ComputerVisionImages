@@ -10,13 +10,7 @@ import cv2
 import pytest
 import numpy as np
 
-# =============================================================================
-#   IMAGES
-# =============================================================================
-
-path_to_image_army = 'test/images/army.jpg'
-image_army = cv2.imread(path_to_image_army)
-image_army_gray = cv2.imread(path_to_image_army, cv2.IMREAD_GRAYSCALE)
+from ComputerVisionImages.test.data.read_test_data import * 
 
 # =============================================================================
 #   FACE DETECTOR
